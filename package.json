@@ -1,5 +1,5 @@
 {
-  "name": "have-i-been-stolen",
+  "name": "Have I Been Stolen?",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -38,7 +38,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,vue}": [
-      "vue-cli-service lint",
+      "vue-cli-service lint --fix",
       "git add"
     ]
   }
