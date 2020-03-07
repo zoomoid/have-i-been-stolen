@@ -1,32 +1,62 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-app-bar flat dark app>
+      <v-toolbar-title>Have I Been Stolen?</v-toolbar-title>
+    </v-app-bar>
+    <v-content>
+      <v-container id="container" fluid>
+        <v-sheet height="4em"></v-sheet>
+        <v-form id="search_form">
+          <v-text-field
+            v-model="bike_id"
+            flat
+            hint="Bike number is usually visible on the frame of the bike"
+            label="Bike No."
+          >
+          </v-text-field>
+          <v-sheet height="1em"></v-sheet>
+          <v-btn type="submit" bottom block large depressed color="primary">Find Bike</v-btn>
+        </v-form>
+        <v-sheet height="2em"></v-sheet>
+        <Timeline v-bind:bike="bike"></Timeline>
+      </v-container>
+    </v-content>
+  </v-app>
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+#container {
+  max-width: 768px;
+  width: 100%;
+  margin: 0 auto;
 }
 </style>
+
+<script>
+import Timeline from "@/components/Timeline.vue";
+import axios from "axios";
+export default {
+  components: {
+    Timeline
+  },
+  data: function() {
+    return {
+      bike_id: null,
+      bike: null,
+      error: null,
+    };
+  },
+  methods: {
+    query(){
+      axios.get(`https://bikehistory.openvelo.org/${this.bike_id}`)
+        .then(response => this.bike = {
+          id: this.bike_id,
+          states: response.data,
+        }).catch(err => {
+          this.bike = null;
+          this.error = err
+        })
+    }
+  }
+};
+</script>
