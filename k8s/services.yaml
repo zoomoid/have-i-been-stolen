@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: web
+  name: have-i-been-stolen
+spec:
+  selector:
+    app: have-i-been-stolen
+  ports:
+  - port: 6001
+    targetPort: 80

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: web
+  name: have-i-been-stolen
+spec:
+  selector:
+    matchLabels:
+      app: have-i-been-stolen
+  template:
+    metadata:
+      labels:
+        app: have-i-been-stolen
+    spec:
+      containers:
+      - name: have-i-been-stolen
+        image: registry.git.rwth-aachen.de/zoomoid/have-i-been-stolen:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+      - name: gitlab
