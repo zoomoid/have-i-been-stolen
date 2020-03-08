@@ -6,7 +6,7 @@
     <v-content>
       <v-container id="container" fluid>
         <v-sheet height="4em"></v-sheet>
-        <v-form id="search_form">
+        <v-form v-on:submit.prevent="query" id="search_form">
           <v-text-field
             v-model="bike_id"
             flat
@@ -15,9 +15,63 @@
           >
           </v-text-field>
           <v-sheet height="1em"></v-sheet>
-          <v-btn type="submit" bottom block large depressed color="primary">Find Bike</v-btn>
+          <v-btn
+            type="button"
+            @click="query()"
+            bottom
+            block
+            large
+            depressed
+            color="primary"
+            >Find Bike</v-btn
+          >
         </v-form>
         <v-sheet height="2em"></v-sheet>
+        <v-progress-linear
+          indeterminate
+          v-if="this.loading"
+          color="grey darken-4"
+          rounded
+          height="8"
+        ></v-progress-linear>
+        <template v-if="bike !== null">
+          <v-alert
+            prominent
+            v-if="prompt"
+            type="error"
+            color="deep-orange"
+            dismissible
+          >
+            <v-row align="center">
+              <v-col class="grow"
+                >Have you recently encountered the bike you were searching
+                for?</v-col
+              >
+              <v-col class="shrink">
+                <v-btn @click="estimateStolen()">Yes, I did!</v-btn>
+              </v-col>
+            </v-row>
+          </v-alert>
+          <template v-else>
+            <v-alert prominent v-if="probably_stolen" type="error" dismissible>
+              <v-row align="center" class="notification-text">
+                <div class="grow">
+                  <span class="font-weight-bold">We estimate that this bike is probably stolen!</span>
+                  <span class="body-2">If you are unsure, try again in a few hours.</span>
+                </div>
+              </v-row>
+            </v-alert>
+            <v-alert prominent v-else type="info" dismissible>
+              <v-row align="center" class="notification-text">
+                <div class="grow">
+                  <span class="font-weight-bold">This bike has not passed our threshold for being stolen.</span>
+                  <span class="body-2">If you are unsure, try again in a few hours.</span>
+                </div>
+              </v-row>
+
+            </v-alert>
+          </template>
+        </template>
         <Timeline v-bind:bike="bike"></Timeline>
       </v-container>
     </v-content>
@@ -44,19 +98,68 @@ export default {
       bike_id: null,
       bike: null,
       error: null,
+      prompt: false,
+      probably_stolen: false,
+      loading: false
     };
   },
   methods: {
-    query(){
-      axios.get(`https://bikehistory.openvelo.org/${this.bike_id}`)
-        .then(response => this.bike = {
-          id: this.bike_id,
-          states: response.data,
-        }).catch(err => {
-          this.bike = null;
-          this.error = err
+    query() {
+      this.loading = true;
+      this.prompt = false;
+      this.probably_stolen = false;
+      axios
+        .get(`https://bikehistory.openvelo.org/${this.bike_id}`)
+        .then(response => {
+          this.bike = {
+            id: this.bike_id,
+            states: response.data
+          };
+          this.prompt = true;
+          this.loading = false;
         })
+        .catch(err => {
+          this.bike = null;
+          this.error = err;
+          this.loading = false;
+        });
+    },
+    estimateStolen() {
+      let c = Date.now();
+      let lastSeen = Date.parse(this.bike.states[0].time);
+      if (c - lastSeen > 1000 * 60 * 60 * 24 * 3) {
+        this.probably_stolen = true;
+      }
+      if (
+        this.bike.states[0].state === "BIKE_BROKEN" ||
+        this.bike.states[0].state === "SLOT_DISABLED"
+      ) {
+        this.probably_stolen = true;
+      }
+      this.prompt = false;
     }
+  },
+  mounted: function() {
+    axios
+      .post("https://api.openvelo.org/graphql", {
+        query: "{ stations { name longitude latitude } }"
+      })
+      .then(response => {
+        this.$root.stations = response.data["data"]["stations"];
+        console.log(this.$root.stations);
+      })
+      .catch(err => {
+        console.error(err);
+      });
   }
 };
 </script>
+
+<style lang="scss" scoped>
+.notification-text {
+  padding-left: 1em;
+  span {
+    display: block;
+  }
+}
+</style>
