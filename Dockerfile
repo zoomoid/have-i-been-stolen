@@ -1,12 +1,12 @@
 # 1st stage build client
 FROM node:latest as builder
 # copy package-lock.json (mainly) and package.json
-COPY /client/package*.json ./
+COPY package*.json ./
 
 # npm ci for better performance in dependency resolution
 RUN yarn install
 # bundle client
-COPY /client /
+COPY / /
 # build with webpack
 RUN yarn run build
 
