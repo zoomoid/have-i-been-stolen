@@ -4,6 +4,7 @@
       <v-toolbar-title>Have I Been Stolen?</v-toolbar-title>
     </v-app-bar>
     <v-content>
+      <v-alert v-if="this.error" type="error">{{this.error}}</v-alert>
       <v-container id="container" fluid>
         <v-sheet height="4em"></v-sheet>
         <v-form v-on:submit.prevent="query" id="search_form">
@@ -68,7 +69,6 @@
                   <span class="body-2">If you are unsure, try again in a few hours.</span>
                 </div>
               </v-row>
-
             </v-alert>
           </template>
         </template>
@@ -146,10 +146,9 @@ export default {
       })
       .then(response => {
         this.$root.stations = response.data["data"]["stations"];
-        console.log(this.$root.stations);
       })
       .catch(err => {
-        console.error(err);
+        this.error = err;
       });
   }
 };
