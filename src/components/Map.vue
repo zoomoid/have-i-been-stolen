@@ -51,16 +51,16 @@ export default {
     center: function(){
       let _center = this.$root.stations.find(({name}) => name === this.station);
       return latLng(
-        _center.latitude,
-        _center.longitude,
+        _center.lat,
+        _center.lon,
       );
     },
     bounds: function(){
       let _center = this.$root.stations.find(({name}) => name === this.station);
 
       return latLngBounds([
-        [_center.latitude - 0.0035, _center.longitude - 0.0019],
-        [_center.latitude + 0.0035, _center.longitude + 0.0019],
+        [_center.lat - 0.0035, _center.lon - 0.0019],
+        [_center.lat + 0.0035, _center.lon + 0.0019],
       ])
     }
   },

@@ -62,19 +62,17 @@
           <template v-else>
             <v-alert prominent v-if="probably_stolen" type="error" dismissible>
               <v-row align="center" class="notification-text">
-                <div class="grow">
-                  <span class="font-weight-bold"
-                    >We estimate that this bike is probably stolen!</span
-                  >
-                  <span class="body-2"
-                    >If you are unsure, try again in a few hours.</span
-                  >
-                </div>
+                <v-col class="grow">
+                  <span class="body-2">
+                    <span class="font-weight-bold">We estimate that this bike is probably stolen!</span>
+                    <span class="body-2">If you are unsure, try again in a few hours.</span>                   
+                  </span>
+                </v-col>
               </v-row>
             </v-alert>
             <v-alert prominent v-else type="info" dismissible>
               <v-row align="center" class="notification-text">
-                <div class="grow">
+                <v-col class="grow">
                   <span class="font-weight-bold"
                     >This bike has not passed our threshold for being
                     stolen.</span
@@ -82,7 +80,7 @@
                   <span class="body-2"
                     >If you are unsure, try again in a few hours.</span
                   >
-                </div>
+                </v-col>
               </v-row>
             </v-alert>
           </template>
@@ -164,11 +162,11 @@ export default {
   },
   mounted: function() {
     axios
-      .post("https://api.openvelo.org/graphql", {
-        query: "{ stations { name longitude latitude } }"
+      .post("https://gbfsql.bikeshare.dev/graphql", {
+        query: "{ Velocity { stations { name lon lat } } }"
       })
-      .then(response => {
-        this.$root.stations = response.data["data"]["stations"];
+      .then(({data}) => {
+        this.$root.stations = data["data"]["Velocity"]["stations"];
       })
       .catch(err => {
         this.error = err;
@@ -179,7 +177,7 @@ export default {
 
 <style lang="scss" scoped>
 .notification-text {
-  padding-left: 1em;
+  // padding-left: 1em;
   span {
     display: block;
   }
