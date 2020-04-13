@@ -109,9 +109,21 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .v-timeline-item {
   align-items: center;
   padding-bottom: 3em;
+}
+
+.v-application--is-ltr .v-timeline--dense:not(.v-timeline--reverse):before {
+  left: calc(32px - 1px) !important;
+}
+
+.v-timeline--dense .v-timeline-item__body {
+  max-width: calc(100% - 64px) !important;
+}
+
+.v-timeline-item__divider {
+  min-width: 64px !important;
 }
 </style>
