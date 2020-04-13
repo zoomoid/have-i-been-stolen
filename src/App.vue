@@ -86,6 +86,12 @@
           </template>
         </template>
         <Timeline :bike="this.bike"></Timeline>
+        <p class="version" v-if="!this.bike">
+          <a href="https://alexander.bartolomey.me" class="author">🚴 @zoomoid</a> 
+          <a href="https://github.com/occloxium/have-i-been-stolen" target="_blank" class="version-no">
+            v1.1.1 
+          </a>
+        </p>
       </v-container>
     </v-content>
   </v-app>
@@ -180,6 +186,22 @@ export default {
   // padding-left: 1em;
   span {
     display: block;
+  }
+}
+
+.version {
+  text-align: center;
+  a {
+    text-decoration: none;
+    opacity: 0.4;
+    &:hover, &:active {
+      opacity: 1;
+    }
+  }
+  .version-no {
+    &::before {
+      content: ' \2013' 
+    }
   }
 }
 </style>
