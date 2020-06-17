@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
       
-    <v-card elevation="2">
+    <v-card class="card primary" elevation="4">
       <v-card-text v-if="this.error !== null">
         <p class="text-center text--disabled">
           <v-icon>error_outline</v-icon> An error occured while fetching map
@@ -82,6 +82,10 @@ export default {
   &:hover, &:active {
     filter: none;
   }
+  border-radius: 8px;
+}
+.v-card__text {
+  padding: 0;
 }
 .overlay {
   display: relative;

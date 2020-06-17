@@ -1,18 +1,18 @@
 <template>
-  <v-app>
-    <v-app-bar flat dark app>
-      <v-spacer></v-spacer>
+  <v-app dark>
+    <v-app-bar flat class="primary" app>
       <v-toolbar-title class="font-weight-bold">Have I Been Stolen?</v-toolbar-title>
-      <v-spacer></v-spacer>
     </v-app-bar>
-    <v-content>
+    <v-main app class="primary">
       <v-alert v-if="this.error" type="error">{{ this.error }}</v-alert>
       <v-container id="container" fluid>
-        <v-sheet height="4em"></v-sheet>
+        <v-sheet class="primary"  height="4em"></v-sheet>
         <v-form v-on:submit.prevent="query" id="search_form">
           <v-text-field
             v-model="bike_id"
+            class="text-field"
             flat
+            tabindex="0"
             hint="The bike number is usually visible on the frame of the bike"
             label="Bike No."
             :rules="[
@@ -21,7 +21,7 @@
             ]"
           >
           </v-text-field>
-          <v-sheet height="1em"></v-sheet>
+          <v-sheet class="primary" height="1em"></v-sheet>
           <v-btn
             type="button"
             @click="query()"
@@ -29,15 +29,15 @@
             block
             large
             depressed
-            color="primary"
+            color="accent"
             >Find Bike</v-btn
           >
         </v-form>
-        <v-sheet height="2em"></v-sheet>
+        <v-sheet class="primary" height="2em"></v-sheet>
         <v-progress-linear
           indeterminate
           v-if="this.loading"
-          color="grey darken-4"
+          color="blue darken-4"
           rounded
           height="8"
         ></v-progress-linear>
@@ -46,7 +46,7 @@
             prominent
             v-if="prompt"
             type="error"
-            color="deep-orange"
+            color="red"
             dismissible
           >
             <v-row align="center">
@@ -70,7 +70,7 @@
                 </v-col>
               </v-row>
             </v-alert>
-            <v-alert prominent v-else type="info" dismissible>
+            <v-alert prominent v-else color="green" type="info" dismissible>
               <v-row align="center" class="notification-text">
                 <v-col class="grow">
                   <span class="font-weight-bold"
@@ -89,21 +89,13 @@
         <p class="version" v-if="!this.bike">
           <a href="https://alexander.bartolomey.me" class="author">🚴 @zoomoid</a> 
           <a href="https://github.com/occloxium/have-i-been-stolen" target="_blank" class="version-no">
-            v1.1.1 
+            v1.2.1
           </a>
         </p>
       </v-container>
-    </v-content>
+    </v-main>
   </v-app>
 </template>
-
-<style lang="scss">
-#container {
-  max-width: 768px;
-  width: 100%;
-  margin: 0 auto;
-}
-</style>
 
 <script>
 import Timeline from "@/components/Timeline.vue";
@@ -181,19 +173,32 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+#container {
+  max-width: 768px;
+  width: 100%;
+  margin: 0 auto;
+}
 .notification-text {
   // padding-left: 1em;
   span {
     display: block;
   }
 }
-
+input {
+  max-height: none !important;
+  font-weight: 600 !important;
+  font-size: 4em !important;
+}
+.v-toolbar__title {
+  font-size: 1.25em !important;
+}
 .version {
   text-align: center;
   a {
     text-decoration: none;
     opacity: 0.4;
+    color: #ffffff !important;
     &:hover, &:active {
       opacity: 1;
     }
