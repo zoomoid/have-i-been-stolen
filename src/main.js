@@ -16,6 +16,8 @@ L.Icon.Default.mergeOptions({
    shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
 });
 
+Vue.prototype.$scrollY = window.scrollY;
+
 new Vue({
   router,
   vuetify,
