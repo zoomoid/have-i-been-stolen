@@ -88,7 +88,8 @@
           <a href="https://alexander.bartolomey.me" class="author">🚴 @zoomoid</a> 
           <a href="https://github.com/occloxium/have-i-been-stolen" target="_blank" class="version-no">
             v1.2.1
-          </a>
+          </a><br>
+          <router-link class="text-center" to="/disclaimer">Disclaimer</router-link>
         </p>
       </v-container>
       <v-btn x-large bottom right fixed id="to-top" class="rounded-pill" @click="$vuetify.goTo(0, {duration: 300, offset: 0, easing: 'easeInOutCubic'})" color="accent" v-if="this.show_fab"><v-icon>keyboard_arrow_up</v-icon> Go up</v-btn>

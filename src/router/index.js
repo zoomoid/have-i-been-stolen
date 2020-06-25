@@ -11,7 +11,7 @@ const routes = [
     component: Main,
   },
   {
-    path: 'disclaimer',
+    path: '/disclaimer',
     component: Disclaimer,
   }
 ]
