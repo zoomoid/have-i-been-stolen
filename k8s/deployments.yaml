@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: have-i-been-stolen
-        image: docker.pkg.github.com/occloxium/have-i-been-stolen:1.2.1
+        image: docker.pkg.github.com/occloxium/have-i-been-stolen:1.3
         imagePullPolicy: Always
         ports:
         - containerPort: 80

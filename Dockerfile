@@ -1,15 +1,15 @@
 # 1st stage build client
 FROM node:latest as builder
 # copy package-lock.json (mainly) and package.json
-ADD package*.json .
+ADD package.json .
 
-ADD yarn.lock .
+ADD package-lock.json .
 # npm ci for better performance in dependency resolution
-RUN yarn install
+RUN npm ci
 # bundle client
 ADD . .
 # build with webpack
-RUN yarn run build
+RUN npm run build
 
 # 2nd stage: lightweight alpine container
 FROM nginx:alpine

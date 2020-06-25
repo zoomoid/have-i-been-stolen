@@ -87,7 +87,7 @@
         <p class="version" v-if="!this.bike">
           <a href="https://alexander.bartolomey.me" class="author">🚴 @zoomoid</a> 
           <a href="https://github.com/occloxium/have-i-been-stolen" target="_blank" class="version-no">
-            v1.2.1
+            v1.3.1
           </a><br>
           <router-link class="text-center" to="/disclaimer">Disclaimer</router-link>
         </p>
@@ -144,7 +144,6 @@ export default {
     },
     load_more(){
       this.loading = true;
-      console.log(`Loading page ${this.currently_loaded_pages + 1}`)
       axios
         .get(`https://bikehistory.openvelo.org/${this.bike_id}/${this.currently_loaded_pages + 1}`)
         .then(({data}) => {
