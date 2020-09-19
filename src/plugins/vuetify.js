@@ -9,7 +9,7 @@ export default new Vuetify({
     options: {
       customProperties: true,
     },
-    dark: true,
+    dark: false,
     themes: {
       dark: {
         primary: "#212121",
@@ -20,6 +20,15 @@ export default new Vuetify({
         success: colors.green.base,
         warning: colors.amber.base
       },
+      light: {
+        primary: colors.grey.darken4,
+        secondary: colors.red.base,
+        accent: colors.blue.base,
+        error: colors.red.base,
+        info: colors.blue.base.base,
+        success: colors.green.base,
+        warning: colors.amber.base
+      }
     },
   },
   icons: {
