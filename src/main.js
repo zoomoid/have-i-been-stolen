@@ -5,6 +5,7 @@ import router from './router'
 import vuetify from './plugins/vuetify';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import store from './store'
 
 Vue.config.productionTip = false
 
@@ -21,5 +22,6 @@ Vue.prototype.$scrollY = window.scrollY;
 new Vue({
   router,
   vuetify,
+  store,
   render: h => h(App)
 }).$mount('#app')
