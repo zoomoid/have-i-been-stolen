@@ -88,7 +88,7 @@
           target="_blank"
           class="version-no"
         >
-          v1.3.1 </a
+          v1.4.1 </a
         ><br />
         <router-link class="text-center" to="/disclaimer"
           >Disclaimer</router-link
