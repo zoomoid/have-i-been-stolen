@@ -7,9 +7,10 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     stations: [],
-    selectedBike: 0,
+    selectedBike: undefined,
     bikes: {},
-    error: ""
+    error: "",
+    loading: false,
   },
   mutations: {
     addBike(state, { id, stations }) {
@@ -44,37 +45,60 @@ export default new Vuex.Store({
     pushNotification(state, { message }) {
       state.message = message;
     },
-    setBike(state, {id}) {
-      state.selectedBike = id; 
+    setBike(state, { id }) {
+      state.selectedBike = id;
     },
+    setLoading(state, { loading }) {
+      state.loading = loading;
+    },
+    setStations(state, {stations}) {
+      state.stations = stations;
+    }
   },
   getters: {
-    bikeById: state => id => {
-      return {...state[id], id} || {id, stations: [], page: 0};
-    },
+    timespan(state) {
+      const id = state.selectedBike;
+      if (state.bikes[id]) {
+        const lastEncounter = new Date(state.bikes[id].stations[0].time);
+        const firstEncounter = new Date(
+          state.bikes[id].stations[state.bikes[id].stations.length - 1].time
+        );
+        return lastEncounter - firstEncounter;
+      }
+      return 0;
+    }
   },
   actions: {
-    queryStations({ commit, state }) {
+    queryStations({ commit }) {
+      commit("setLoading", {
+        loading: true
+      });
       axios
         .post("https://gbfsql.bikeshare.dev/graphql", {
           query: "{ Velocity { stations { name lon lat } } }"
         })
         .then(({ data }) => {
-          state.stations = data["data"]["Velocity"]["stations"];
+          commit("setStations", {
+            stations: data["data"]["Velocity"]["stations"]
+          });
+          commit("setLoading", { loading: false });
         })
         .catch(error => {
           commit("pushNotification", { message: error.message });
+          commit("setLoading", { loading: false });
         });
     },
     loadMore({ commit, state }) {
       const id = state.selectedBike;
       if (state.bikes[id]) {
         commit("incrementPage", { id });
+        commit("setLoading", { loading: true });
         const page = state.bikes[id].page;
         axios
           .get(`https://bikehistory.openvelo.org/${id}/${page}`)
           .then(({ data }) => {
             commit("addToBike", { id, stations: data });
+            commit("setLoading", { loading: false });
           })
           .catch(error => {
             if (error.response) {
@@ -84,18 +108,20 @@ export default new Vuex.Store({
               } else {
                 // bike state got corrupted, remove bike from state
                 commit("removeBike", { id });
-                commit("setBike", {id: -1});
+                commit("setBike", { id: -1 });
               }
             } else {
               // Possible network error, rollback page increment
               // to try again later
               commit("decrementPage", { id });
             }
+            commit("setLoading", { loading: false });
           });
       }
     },
     query({ commit, state }, { id }) {
       if (!state.bikes[id]) {
+        commit("setLoading", { loading: true });
         axios
           .get(`https://bikehistory.openvelo.org/${id}/1`)
           .then(({ data }) => {
@@ -103,9 +129,8 @@ export default new Vuex.Store({
               id: id,
               stations: data
             });
-            commit("setBike", {
-              id
-            });
+            commit("setBike", { id });
+            commit("setLoading", { loading: false });
           })
           .catch(error => {
             if (error.response && error.status === 404) {
@@ -114,14 +139,11 @@ export default new Vuex.Store({
                 id,
                 stations: []
               });
-              commit("setBike", {
-                id
-              });
+              commit("setBike", { id });
             } else {
-              commit("pushNotification", {
-                message: error.message
-              });
+              commit("pushNotification", { message: error.message });
             }
+            commit("setLoading", { loading: false });
           });
       }
     }
