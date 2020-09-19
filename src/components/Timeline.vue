@@ -1,11 +1,12 @@
 <template>
-  <v-card elevation="16" v-if="bike !== null">
+  <v-card elevation="16" v-if="bike">
     <v-card-text>
       <v-sheet height="4em"></v-sheet>
       <h1 class="display-2">🚴 Bike #{{ bike.id }}</h1>
       <template v-if="bike.stations.length == 0">
         <p class="text--disabled">
-          No observation in the last {{bike.page > 1 ? this.bike.page + " weeks" : "week"}}
+          No observation in the last
+          {{ bike.page > 1 ? this.bike.page + " weeks" : "week" }}
         </p>
       </template>
       <template v-else>
@@ -14,38 +15,60 @@
           <span class="last-seen__when">{{
             human_readable_date(bike.stations[0].time)
           }}</span>
-          at <span class="last-seen__where">{{ bike.stations[0].station }}</span><br>
+          at <span class="last-seen__where">{{ bike.stations[0].station }}</span
+          ><br />
         </p>
         <p class="text--disabled text-left">
-          Searched the bike in data of {{this.bike.weeks_loaded > 1 ? this.bike.weeks_loaded + " weeks" : "one week"}}
+          Searched the bike in data of {{ weeks }}
         </p>
         <div>
           <v-timeline align-top dense>
             <div v-for="station in bike.stations" v-bind:key="station.time">
-              <v-lazy transition="fade-transition" :options="{ threshold: 0.8 }" height="380">
-                <v-timeline-item icon="place" class="state" color="grey darken-4"
-                  fill-dot right>
+              <v-lazy
+                transition="fade-transition"
+                :options="{ threshold: 0.8 }"
+                height="380"
+              >
+                <v-timeline-item
+                  icon="place"
+                  class="state"
+                  color="grey darken-4"
+                  fill-dot
+                  right
+                >
                   <v-list-item two-line>
                     <v-list-item-avatar>
-                      <v-tooltip v-if="station.state === 'BIKE_AVAILABLE'" bottom>
+                      <v-tooltip
+                        v-if="station.state === 'BIKE_AVAILABLE'"
+                        bottom
+                      >
                         <template v-slot:activator="{ on }">
                           <v-icon v-on="on">beenhere</v-icon>
                         </template>
                         <span>Bike available</span>
                       </v-tooltip>
-                      <v-tooltip v-else-if="station.state === 'BIKE_RESERVED'" bottom>
+                      <v-tooltip
+                        v-else-if="station.state === 'BIKE_RESERVED'"
+                        bottom
+                      >
                         <template v-slot:activator="{ on }">
                           <v-icon v-on="on">lock</v-icon>
                         </template>
                         <span>Bike reserved</span>
                       </v-tooltip>
-                      <v-tooltip v-else-if="station.state === 'BIKE_BROKEN'" bottom>
+                      <v-tooltip
+                        v-else-if="station.state === 'BIKE_BROKEN'"
+                        bottom
+                      >
                         <template v-slot:activator="{ on }">
                           <v-icon v-on="on">highlight_off</v-icon>
                         </template>
                         <span>Bike broken</span>
                       </v-tooltip>
-                      <v-tooltip v-else-if="station.state === 'SLOT_DISABLED'" bottom>
+                      <v-tooltip
+                        v-else-if="station.state === 'SLOT_DISABLED'"
+                        bottom
+                      >
                         <template v-slot:activator="{ on }">
                           <v-icon v-on="on">build</v-icon>
                         </template>
@@ -76,11 +99,20 @@
       </template>
       <v-divider></v-divider>
       <p class="text-center">
-        Searched the bike in data of {{this.bike.page > 1 ? this.bike.page + " weeks" : "one week"}}
+        Searched the bike in data of {{ weeks }}
       </p>
       <v-lazy transition="fade-transition" :options="{ threshold: 1 }">
-        <v-btn rounded x-large id="load-more" class="accent rounded-pill" 
-          v-intersect.quiet="{handler: onIntersect, options: { rootMargin: '0px 0px 0px 0px', threshold: 1 }}" @click="$emit('paginate')">
+        <v-btn
+          rounded
+          x-large
+          id="load-more"
+          class="accent rounded-pill"
+          v-intersect.quiet="{
+            handler: onIntersect,
+            options: { rootMargin: '0px 0px 0px 0px', threshold: 1 },
+          }"
+          @click="$emit('paginate')"
+        >
           <v-icon left>cached</v-icon> Load more
         </v-btn>
       </v-lazy>
@@ -95,15 +127,23 @@
 
 <script>
 import Map from "./Map.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Timeline",
   components: {
-    Map
+    Map,
   },
   props: {
     bike: Object,
-    default: null
+    default: null,
+  },
+  computed: {
+    ...mapGetters(["timespan"]),
+    weeks() {
+      const w = Math.round(this.timespan / (1000 * 60 * 60 * 24 * 7));
+      return w === 1 ? `${w} week` : `${w} weeks`;
+    },
   },
   methods: {
     human_readable_date(date_string) {
@@ -112,13 +152,13 @@ export default {
         month: "2-digit",
         day: "2-digit",
         hour: "2-digit",
-        minute: "2-digit"
+        minute: "2-digit",
       });
     },
     onIntersect() {
-      this.$emit('paginate')
-    }
-  }
+      this.$emit("paginate");
+    },
+  },
 };
 </script>
 
@@ -145,7 +185,7 @@ export default {
   min-width: 64px !important;
 }
 
-@media only screen and (max-width: 450px){
+@media only screen and (max-width: 450px) {
   .v-card__text {
     padding: 0;
   }

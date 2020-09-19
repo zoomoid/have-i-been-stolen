@@ -29,7 +29,8 @@
           >Find Bike</v-btn
         >
       </v-form>
-      <template v-if="bike">
+      <v-sheet height="1em"></v-sheet>
+      <template v-if="selectedBike">
         <v-alert prominent v-if="prompt" type="error" color="red" dismissible>
           <v-row align="center">
             <v-col class="grow"
@@ -71,7 +72,7 @@
           </v-alert>
         </template>
       </template>
-      <Timeline @paginate="handlePaginate" :bike="bike"></Timeline>
+      <Timeline v-if="selectedBike" @paginate="handlePaginate" :bike="bike"></Timeline>
       <v-progress-linear
         indeterminate
         v-if="this.loading"
@@ -123,14 +124,13 @@ export default {
   data: function () {
     return {
       bikeId: "",
-      prompt: false,
+      prompt: true,
       probably_stolen: false,
-      loading: false,
       show_fab: false,
     };
   },
   computed: {
-    ...mapState(["selectedBike", "error", "bikes"]),
+    ...mapState(["selectedBike", "error", "bikes", 'loading']),
     bike() {
       if (this.bikeId) {
         return { ...this.bikes[this.bikeId], id: this.bikeId };
@@ -141,19 +141,19 @@ export default {
   },
   methods: {
     estimate_stolen() {
-      if (this.bike.states.length == 0) {
+      if (this.bike.stations.length == 0) {
         this.probably_stolen = true;
         this.prompt = false;
         return;
       }
       let c = Date.now();
-      let lastSeen = Date.parse(this.bike.states[0].time);
+      let lastSeen = Date.parse(this.bike.stations[0].time);
       if (c - lastSeen > 1000 * 60 * 60 * 24 * 3) {
         this.probably_stolen = true;
       }
       if (
-        this.bike.states[0].state === "BIKE_BROKEN" ||
-        this.bike.states[0].state === "SLOT_DISABLED"
+        this.bike.stations[0].state === "BIKE_BROKEN" ||
+        this.bike.stations[0].state === "SLOT_DISABLED"
       ) {
         this.probably_stolen = true;
       }
