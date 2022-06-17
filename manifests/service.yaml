@@ -3,9 +3,11 @@ kind: Service
 metadata:
   namespace: web
   name: have-i-been-stolen
+  labels:
+    app: have-i-been-stolen
 spec:
   selector:
     app: have-i-been-stolen
   ports:
-  - port: 6001
+  - port: 80
     targetPort: 80
